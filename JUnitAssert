@@ -1,0 +1,253 @@
+package junit;
+import static org.junit.Assert.*;  
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.Connection;  
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.sql.rowset.JdbcRowSet;
+import javax.sql.rowset.RowSetProvider;
+
+
+public class JUnit {
+	
+	//JUnit and Assert 
+	public static int findMax(int arr[]){  
+        int max=0;  
+        for(int i=1;i<arr.length;i++){  
+            if(max<arr[i])  
+                max=arr[i];  
+        }  
+        return max;  
+    }  
+	
+	
+	public class TestLogic {  
+	  
+	    @Test  
+	    public void testFindMax(){  
+	        assertEquals(4,Calculation.findMax(new int[]{1,3,4,2}));  
+	        assertEquals(-1,Calculation.findMax(new int[]{-12,-1,-3,-4,-2}));  
+	    }  
+	}
+	
+	
+	
+	
+	
+	//DriverManager class
+	public static void main(String args[]) throws ClassNotFoundException  
+    {  
+        String url;  
+        Connection con = null;  
+        try {  
+            Class.forName("com.mysql.jdbc.Driver");  
+            url="jdbc:mysql://localhost:3306/spring";  
+            con = DriverManager.getConnection(url);  
+            System.out.println("Connection created");  
+            con.close();  
+            System.out.println("Connection closed");  
+            }  
+            catch (Exception e) {  
+            System.out.println(e.toString());  
+        }  
+    }
+	
+	
+	
+	
+	
+	//JDBC Driver implementation versions
+	public static void main1(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("Hello User Please Enter Your Name: \n");
+		String user = br.readLine();
+		System.out.println("Welcome To Student Management App." + user);
+		
+		
+		
+		while(true) {
+			System.out.println("PRESS 1 to ADD student");
+			System.out.println("PRESS 2 to DELETE student");
+			System.out.println("PRESS 3 to DISPLAY student");
+			System.out.println("PRESS 4 to UPDATE student");
+			System.out.println("PRESS 5 to EXIT App");
+			
+			int c = Integer.parseInt(br.readLine());
+			
+			if(c == 1) {
+				
+				
+				
+				//Add student and Submit Query
+				
+				System.out.println("Enter User Name: ");
+				String name = br.readLine();
+				System.out.println("Enter User Phone: ");
+				String phone = br.readLine();
+				System.out.println("Enter User City: ");
+				String city = br.readLine();
+				
+				
+				
+				//create student object
+				Student st = new Student(name,phone,city);
+				boolean ans = StudentDao.insertStudentRecordToDB(st);
+				if(ans) {
+					System.out.println("Student record Inserted Successfully");
+					System.out.println("Student Record:" + st);
+				}else {
+					System.out.println("Some error Occured While Inserting.Please try Again!");
+				}
+				
+			}
+			
+			
+			
+			
+			
+			//Delete student
+			else if(c == 2) {
+				System.out.println("Enter Student ID To Delete: ");
+				int userID = Integer.parseInt(br.readLine());
+				boolean f = StudentDao.deleteStudentRecordFromDB(userID);
+				if(f) {
+					System.out.println("Student Of ID " + userID + " Record Deleted ");
+				}else {
+					System.out.println("Something Went Wrong.Please try Again!");
+				}
+			}
+			
+			
+			
+			
+			
+			//Display student
+			else if(c == 3) {
+				StudentDao.showAllStudentRecords();
+			}
+			
+			
+			
+			
+			
+			
+			//Update student
+			else if(c == 4) {
+				
+				System.out.println("PRESS 1 to UPDATE name");
+				System.out.println("PRESS 2 to UPDATE phone");
+				System.out.println("PRESS 3 to UPDATE city");
+				int val = Integer.parseInt(br.readLine());
+				if(val == 1) {
+					//Update Name
+					System.out.println("Enter name to UPDATE");
+					String name = br.readLine();
+					System.out.println("Enter ID to identify student!");
+					int id = Integer.parseInt(br.readLine());
+					Student st = new Student();
+					st.setStudentName(name);
+					boolean f = StudentDao.updateStudentRecord(val,name,id,st);
+					if(f) {
+						System.out.println("Student Name Updated Successfully...");
+					}else {
+						System.out.println("Something Went Wrong Please try Again!");
+					}
+				}
+				else if(val == 2) {
+					//Update Phone
+					System.out.println("Enter phone to UPDATE");
+					String phone = br.readLine();
+					System.out.println("Enter ID to identify student!");
+					int id = Integer.parseInt(br.readLine());
+					Student st = new Student();
+					st.setStudentPhone(phone);
+					boolean f = StudentDao.updateStudentRecord(val,phone,id,st);
+					if(f) {
+						System.out.println("Student Phone Updated Successfully");
+					}else {
+						System.out.println("Something Went Wrong Please try Again!");
+					}
+				}
+				else if(val == 3) {
+					//Update city
+					System.out.println("Enter city to UPDATE...");
+					String city = br.readLine();
+					System.out.println("Enter ID to identify student!");
+					int id = Integer.parseInt(br.readLine());
+					Student st = new Student();
+					st.setStudentCity(city);
+					boolean f = StudentDao.updateStudentRecord(val,city,id,st);
+					if(f) {
+						System.out.println("Student City Updated Successfully.");
+					}else {
+						System.out.println("Something Went Wrong Please try Again!");
+					}
+				}
+				else {
+					System.out.println("You have not updated Anything.");
+				}
+				
+			}
+			else if(c == 5) {
+				//Exit
+				
+				System.out.println("Thank You For Using Application." + user);
+				break;
+			}
+			else {
+				
+			}
+			
+		}
+	}
+	
+	
+	
+	
+	//Creating rowset objects
+	public static void main2(String[] args) throws Exception {  
+        Class.forName("jdbc.driver");  
+
+  
+JdbcRowSet rowSet = RowSetProvider.newFactory().createJdbcRowSet();  
+rowSet.setUrl("jdbc:thin:@localhost:xe");  
+rowSet.setUsername("system");  
+rowSet.setPassword("Ahsan");  
+          
+rowSet.setCommand("select *");  
+rowSet.execute();  
+          
+while (rowSet.next()) {  
+                 
+               System.out.println("Id: " + rowSet.getString(1));  
+               System.out.println("Name: " + rowSet.getString(2));  
+               System.out.println("Salary: " + rowSet.getString(3));  
+       }  
+        
+}  
+
+
+	
+	
+	//JDBC transactions
+	public static void main3(String args[])throws Exception{  
+		Class.forName("oracle.jdbc.driver.OracleDriver");  
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:xe","system","oracle");  
+		con.setAutoCommit(false);  
+		  
+		Statement stmt=con.createStatement();  
+		stmt.executeUpdate("insert into user420 values(190,'Ahsan',40000)");  
+		stmt.executeUpdate("insert into user420 values(191,'Syed',50000)");  
+		  
+		con.commit();  
+		con.close();  
+	}
+}
